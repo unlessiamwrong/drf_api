@@ -15,9 +15,25 @@ Including another URLconf
 """
 from django.urls import path
 from django.conf.urls import include
-from items.urls import urlpatterns
+from items.urls import urlpatterns as items_url
+from carts.urls import urlpatterns as carts_url
+from users.urls import urlpatterns as users_url
+from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
+from items.views import UserViewset
 
+schema_view = get_schema_view(
+    openapi.Info(
+        title='Stepic DRF API',
+        default_version='v1',
+    ),
+    public=True,
+)
 
 urlpatterns = [
-    path(r'api/v1/', include(urlpatterns)),
+    path('docs/', schema_view.with_ui('swagger', cache_timeout=0)),
+    path(r'api/v1/', include(items_url)),
+    path(r'api/v1/', include(carts_url)),
+    path(r'users/', include(users_url)),
+
 ]
